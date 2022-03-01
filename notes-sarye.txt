@@ -1,0 +1,13 @@
+
+Setup
+* First terminal
+docker-compose up
+
+* 2n terminal
+./psql.sh
+
+* 3rd terminal
+cd spark-cluster
+./build-images.sh
+docker-compose up --scale spark-worker=3
+

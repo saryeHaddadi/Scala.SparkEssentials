@@ -133,5 +133,5 @@ object ScalaRecap extends App {
   implicit class Dog(name: String) {
     def bark = println("Bark!")
   }
-  //"Oscar".bark
+  "Oscar".bark
 }
