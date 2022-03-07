@@ -1,6 +1,6 @@
 package part3typedatasets
 
-import org.apache.spark.sql.functions.{avg, col, count}
+import org.apache.spark.sql.functions.{array_contains, avg, col, count}
 import org.apache.spark.sql.{Dataset, Encoders, SparkSession}
 
 import java.sql.Date
@@ -69,6 +69,36 @@ object d_Datasets extends App {
   // 3.
   println(carsDS.map(_.Horsepower.getOrElse(0L)).reduce(_ + _) / carsCount)
   carsDS.select(avg(col("Horsepower"))).show
+
+  /* Joins */
+  case class Guitar(id: Long, make: String, model: String, guitarType: String)
+  case class GuitarPlayer(id: Long, name: String, guitars: Seq[Long], band: Long)
+  case class Band(id: Long, name: String, hometown: String, year: Long)
+  val guitarsDS = readDF("guitars.json").as[Guitar]
+  val guitarPlayersDS = readDF("guitarPlayers.json").as[GuitarPlayer]
+  val bandsDS = readDF("bands.json").as[Band]
+
+  val guitarPlayersBandsDS: Dataset[(GuitarPlayer, Band)] = guitarPlayersDS.joinWith(bandsDS, guitarPlayersDS.col("band") === bandsDS.col("id"), "inner")
+  guitarPlayersBandsDS.show
+
+  /**
+   * Exercise: join the guitarsDS and guitarPlayersDS, in an outer join
+   * (hint: use array_contains)
+   */
+  val playersAndTheirGuitarDS = guitarPlayersDS.joinWith(guitarsDS, array_contains(guitarPlayersDS.col("guitars"), guitarsDS.col("id")), "outer")
+  playersAndTheirGuitarDS.show
+
+  // Grouping DS
+  val carsGroupedByOrigin = carsDS
+    .groupByKey(_.Origin)
+    .count()
+    .show()
+
+  /*
+  * Remember, Joins & Groups are claster-Wide transformtions, ie. will induce shuffling operations.
+  * Thus, some data will be moved in-between node, which is expensive.
+   */
+
 
 
 
