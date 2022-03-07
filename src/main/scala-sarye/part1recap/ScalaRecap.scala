@@ -39,7 +39,7 @@ object ScalaRecap extends App {
 
   // method notation
   var x = 1 + 2
-  var x = 1.+(2)
+  var y = 1.+(2)
 
   // Functional Programming
   val incrementer_v1: Function1[Int, Int] = new Function1[Int, Int] {
@@ -130,7 +130,7 @@ object ScalaRecap extends App {
 
   // implicit conversions - implicit classes
   // Implicite classes are almost always preferable over implicit defs
-  implicit class Dog(name: String) {
+  implicit class Dog2(name: String) {
     def bark = println("Bark!")
   }
   "Oscar".bark
